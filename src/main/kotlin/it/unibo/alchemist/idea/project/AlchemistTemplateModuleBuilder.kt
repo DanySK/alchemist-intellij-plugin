@@ -31,16 +31,16 @@ class AlchemistTemplateModuleBuilder(private val templateDirectoryPath: String) 
         const val JAVA_MAJOR_VERSION = 11
     }
 
-    override fun getBuilderId(): String = """alchemist.template.builder [$presentableName]"""
+    override fun getBuilderId(): String = "alchemist.template.builder [$presentableName]"
 
     // This function returns the template name from the resource or an empty string.
-    override fun getPresentableName(): String = readResourceText("""$templateDirectoryPath/name.txt""")
+    override fun getPresentableName(): String = readResourceText("$templateDirectoryPath/name.txt")
 
     // This function returns the template description from the resource or an empty string.
-    override fun getDescription(): String = readResourceText("""$templateDirectoryPath/description.html""")
+    override fun getDescription(): String = readResourceText("$templateDirectoryPath/description.html")
 
     // This function returns the template icon from the resource or a default icon.
-    override fun getNodeIcon(): Icon = with("""$templateDirectoryPath/icon.svg""") {
+    override fun getNodeIcon(): Icon = with("$templateDirectoryPath/icon.svg") {
         if (getResource(this) != null) IconLoader.getIcon("/$this") else Icons.ALCHEMIST_LOGO
     }
 
@@ -49,7 +49,7 @@ class AlchemistTemplateModuleBuilder(private val templateDirectoryPath: String) 
         wizardContext: WizardContext,
         modulesProvider: ModulesProvider
     ): Array<ModuleWizardStep> = ModuleWizardStep.EMPTY_ARRAY.apply {
-        setWizardContext(wizardContext)
+//        setWizardContext(wizardContext)
     }
 
     // This override adds the project JDK field to the wizard.
@@ -84,16 +84,19 @@ class AlchemistTemplateModuleBuilder(private val templateDirectoryPath: String) 
                 // Preselect a JDK with at least the minimum recommended version, if it exists.
                 // Otherwise only fire the listener.
                 selectedJdk = IntRange(0, itemCount - 1).mapNotNull { getItemAt(it).jdk }.sortedBy { it.versionString }
-                    .firstOrNull { it.versionString!! >= """java version "$JAVA_MAJOR_VERSION.0.0"""" }
+                    .firstOrNull { it.versionString!! >= "java version \"$JAVA_MAJOR_VERSION.0.0\"" }
                     ?: selectedJdk
             }
 
             // Add the JDK field to the GUI.
-            settingsStep.addSettingsField("Project JDK:", panel {
-                row {
-                    jdkComboBox(growX, pushX, comment = """Using JDK $JAVA_MAJOR_VERSION or later is recommended.""")
+            settingsStep.addSettingsField(
+                "Project JDK:",
+                panel {
+                    row {
+                        jdkComboBox(growX, pushX, comment = "Using JDK $JAVA_MAJOR_VERSION or later is recommended.")
+                    }
                 }
-            })
+            )
         }
 
     // This override copies the template files in the new module and sets the Gradle configurations
@@ -112,7 +115,7 @@ class AlchemistTemplateModuleBuilder(private val templateDirectoryPath: String) 
             File(rootDirectoryPath, GradleConstants.SETTINGS_FILE_NAME).delete()
 
             // The path to the template contents.
-            val templateContentsPath = """$templateDirectoryPath/contents"""
+            val templateContentsPath = "$templateDirectoryPath/contents"
 
             // Get all the resources from the template directory.
             ClassGraph().whitelistPackages(templateContentsPath).scan().allResources
